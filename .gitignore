@@ -169,3 +169,6 @@ src/ragas/_version.py
 .python-version
 experiments/retriever-benchmarks/datasets
 experiments/tmp
+
+# Environment folder
+envs/

@@ -108,6 +108,7 @@ class Faithfulness(MetricWithLLM):
             scores = []
             final_answer = "Final verdict for each statement in order:"
             final_answer = final_answer.lower()
+            print(f"[INFO] Final answer: {final_answer}")
             for i, output in enumerate(outputs):
                 output = output[0].text.lower().strip()
                 if output.find(final_answer) != -1:
