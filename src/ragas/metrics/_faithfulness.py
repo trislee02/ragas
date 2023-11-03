@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as t
+import logging
 from dataclasses import dataclass
 
 from langchain.callbacks.manager import CallbackManager, trace_as_chain_group
@@ -108,9 +109,11 @@ class Faithfulness(MetricWithLLM):
             scores = []
             final_answer = "Final verdict for each statement in order:"
             final_answer = final_answer.lower()
-            print(f"[INFO] Final answer: {final_answer}")
+            logging.info(f"Final answer: {final_answer}")
             for i, output in enumerate(outputs):
+                print()
                 output = output[0].text.lower().strip()
+                logging.info(f"Output: {output}")
                 if output.find(final_answer) != -1:
                     output = output[output.find(final_answer) + len(final_answer) :]
                     score = sum(
