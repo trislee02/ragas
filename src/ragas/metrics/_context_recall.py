@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as t
+import logging
 from dataclasses import dataclass
 
 from datasets import Dataset
@@ -75,7 +76,7 @@ class ContextRecall(MetricWithLLM):
             responses = [[i.text for i in r] for r in results.generations]
             scores = []
             for response in responses:
-                print(f"TRI LOG: sentences: {response[0]}")
+                logging.info(f"CONTEXT RECALL: sentences: {response[0]}")
                 sentences = response[0].split("\n")
                 denom = len(sentences)
                 numerator = sum(

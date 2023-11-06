@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
+import logging
+
 from datasets import Dataset, concatenate_datasets
 
 from ragas._analytics import EvaluationEvent, track
@@ -24,6 +26,7 @@ def evaluate(
         "answer": "answer",
         "ground_truths": "ground_truths",
     },
+    verbose: bool = False,
 ) -> Result:
     """
     Run the evaluation on the dataset with different metrics
@@ -96,6 +99,13 @@ def evaluate(
     # initialize all the models in the metrics
     [m.init_model() for m in metrics]
 
+    if verbose:
+        logging.basicConfig(filename="ragas-evaluation.log", filemode="w")
+        logging.getLogger().setLevel(logging.INFO)
+    else:
+        logging.getLogger().setLevel(logging.CRITICAL)
+        logging.getLogger().disabled = True
+        
     scores = []
     binary_metrics = []
     for metric in metrics:
