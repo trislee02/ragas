@@ -111,8 +111,8 @@ class Faithfulness(MetricWithLLM):
             final_answer = final_answer.lower()
             logging.info(f"Final answer: {final_answer}")
             for i, output in enumerate(outputs):
-                print()
                 output = output[0].text.lower().strip()
+                print(f"TRI LOG: Output: {output}")
                 logging.info(f"Output: {output}")
                 if output.find(final_answer) != -1:
                     output = output[output.find(final_answer) + len(final_answer) :]
