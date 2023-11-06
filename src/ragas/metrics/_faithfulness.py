@@ -112,7 +112,9 @@ class Faithfulness(MetricWithLLM):
             for i, output in enumerate(outputs):
                 output = output[0].text.lower().strip()
                 list_statements_str = '\n'.join(list_statements[i])
+                logging.info("\n\n\n")
                 logging.info(f"FAITHFULNESS: List statements: {list_statements_str}")
+                logging.info("\n\n\n")
                 logging.info(f"FAITHFULNESS: Output: {output}")
                 if output.find(final_answer) != -1:
                     output = output[output.find(final_answer) + len(final_answer) :]

@@ -95,6 +95,7 @@ class AnswerRelevancy(MetricWithLLM):
             scores = []
             for question, gen_questions in zip(questions, results):
                 gen_questions_str = "\n".join(gen_questions)
+                logging.info("\n\n\n")
                 logging.info(f"ANSWER RELEVANCE:\nquestion:\n{question}\n\ngen_questions:\n{gen_questions_str}")
                 cosine_sim = self.calculate_similarity(question, gen_questions)
                 scores.append(cosine_sim.mean())

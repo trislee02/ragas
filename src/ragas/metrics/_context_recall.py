@@ -76,6 +76,7 @@ class ContextRecall(MetricWithLLM):
             responses = [[i.text for i in r] for r in results.generations]
             scores = []
             for response in responses:
+                logging.info("\n\n\n")
                 logging.info(f"CONTEXT RECALL: sentences: {response[0]}")
                 sentences = response[0].split("\n")
                 denom = len(sentences)
