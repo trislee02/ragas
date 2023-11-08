@@ -89,4 +89,4 @@ class RequestRecall(MetricWithLLM):
         return scores
 
 
-context_recall = RequestRecall()
+request_recall = RequestRecall()
