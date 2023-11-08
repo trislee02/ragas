@@ -24,6 +24,7 @@ def evaluate(
         "question": "question",
         "contexts": "contexts",
         "answer": "answer",
+        "request": "request",
         "ground_truths": "ground_truths",
     },
     verbose: bool = False,
