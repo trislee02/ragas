@@ -94,13 +94,16 @@ class LangchainLLM(BaseRagasLLM):
         old_n = self.langchain_llm.n
         self.langchain_llm.n = n
 
-        if isinstance(self.llm, BaseLLM):
-            ps = [p.format() for p in prompts]
-            result = self.llm.generate(ps, callbacks=callbacks)
-        else:  # if BaseChatModel
-            ps = [p.format_messages() for p in prompts]
-            result = self.llm.generate(ps, callbacks=callbacks)
-        self.llm.n = old_n
+        try:
+            if isinstance(self.llm, BaseLLM):
+                ps = [p.format() for p in prompts]
+                result = self.llm.generate(ps, callbacks=callbacks)
+            else:  # if BaseChatModel
+                ps = [p.format_messages() for p in prompts]
+                result = self.llm.generate(ps, callbacks=callbacks)
+            self.llm.n = old_n
+        except:
+            result = LLMResult(generations=[])
 
         return result
 

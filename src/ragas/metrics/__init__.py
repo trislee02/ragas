@@ -8,6 +8,7 @@ from ragas.metrics._context_precision import (
     context_relevancy,
 )
 from ragas.metrics._context_recall import ContextRecall, context_recall
+from ragas.metrics._request_recall import RequestRecall, request_recall
 from ragas.metrics.critique import AspectCritique
 from ragas.metrics._faithfulness import Faithfulness, faithfulness
 
@@ -17,6 +18,7 @@ DEFAULT_METRICS = [
     faithfulness,
     context_recall,
     context_relevancy,
+    request_recall,
 ]
 
 __all__ = [
@@ -35,4 +37,6 @@ __all__ = [
     "AspectCritique",
     "ContextRecall",
     "context_recall",
+    "RequestRecall",
+    "request_recall",
 ]
