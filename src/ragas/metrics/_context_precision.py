@@ -118,6 +118,7 @@ class ContextRelevancy(MetricWithLLM):
     agreement_metric: str = "bert_score"
     model_name: str = "cross-encoder/stsb-TinyBERT-L-4"
     show_deprecation_warning: bool = False
+    log_name: str = "context_relevancy_log"
 
     def __post_init__(self: t.Self):
         if self.agreement_metric == "bert_score" and self.model_name is None:
@@ -201,6 +202,7 @@ class ContextPrecision(MetricWithLLM):
     name: str = "context_precision"
     evaluation_mode: EvaluationMode = EvaluationMode.qc
     batch_size: int = 15
+    log_name: str = "context_precision_log"
 
     def _score_batch(
         self: t.Self,

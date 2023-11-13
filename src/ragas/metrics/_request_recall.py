@@ -49,6 +49,7 @@ class RequestRecall(MetricWithLLM):
     name: str = "request_recall"
     evaluation_mode: EvaluationMode = EvaluationMode.gc
     batch_size: int = 15
+    log_name: str = "requests"
 
     def _score_batch(
         self: t.Self,
@@ -76,6 +77,7 @@ class RequestRecall(MetricWithLLM):
             )
             responses = [[i.text for i in r] for r in results.generations]
             scores = []
+            logs = []
             for response in responses:
                 logging.info("\n\n\n")
                 logging.info(f"REQUEST RECALL: classification:\n{response[0]}")
@@ -85,8 +87,9 @@ class RequestRecall(MetricWithLLM):
                     bool(sentence.find(verdict_token) != -1) for sentence in sentences
                 )
                 scores.append(numerator / denom)
+                logs.append(response[0])
 
-        return scores
+        return scores, logs
 
 
 request_recall = RequestRecall()

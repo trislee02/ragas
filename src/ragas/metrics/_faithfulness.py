@@ -17,7 +17,7 @@ if t.TYPE_CHECKING:
 #################
 LONG_FORM_ANSWER_PROMPT = HumanMessagePromptTemplate.from_template(
     """\
-Given a question and answer, create one or more statements from each sentence in the given answer.
+Given a question and answer, create one or more statements from each sentence (except for email sentences, social interaction sentences) in the given answer.
 question: Who was  Albert Einstein and what is he best known for?
 answer: He was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time. He was best known for developing the theory of relativity, he also made important contributions to the development of the theory of quantum mechanics.
 statements:\nAlbert Einstein was born in Germany.\nAlbert Einstein was best known for his theory of relativity.
@@ -64,6 +64,7 @@ class Faithfulness(MetricWithLLM):
     name: str = "faithfulness"
     evaluation_mode: EvaluationMode = EvaluationMode.qac
     batch_size: int = 15
+    log_name: str = "statements"
 
     def _score_batch(
         self: t.Self,
@@ -107,6 +108,7 @@ class Faithfulness(MetricWithLLM):
             outputs = result.generations
 
             scores = []
+            logs = []
             final_answer = "Final verdict for each statement in order:"
             final_answer = final_answer.lower()
             for i, output in enumerate(outputs):
@@ -116,6 +118,7 @@ class Faithfulness(MetricWithLLM):
                 logging.info(f"FAITHFULNESS: List statements: {list_statements_str}")
                 logging.info("\n\n\n")
                 logging.info(f"FAITHFULNESS: Output: {output}")
+                logs.append(output)
                 if output.find(final_answer) != -1:
                     output = output[output.find(final_answer) + len(final_answer) :]
                     score = sum(
@@ -131,7 +134,7 @@ class Faithfulness(MetricWithLLM):
 
                 scores.append(1 - score)
 
-        return scores
+        return scores, logs
 
 
 faithfulness = Faithfulness()

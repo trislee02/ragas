@@ -108,12 +108,17 @@ def evaluate(
         logging.getLogger().disabled = True
         
     scores = []
+    logs = []
     binary_metrics = []
     for metric in metrics:
         if isinstance(metric, AspectCritique):
             binary_metrics.append(metric.name)
         print(f"evaluating with [{metric.name}]")
-        scores.append(metric.score(dataset).select_columns(metric.name))
+        scored_dataset, log_dataset = metric.score(dataset)
+        scores.append(scored_dataset.select_columns(metric.name))
+        if log_dataset:
+            logs.append(log_dataset.select_columns(metric.log_name))
+
 
     # log the evaluation event
     metrics_names = [m.name for m in metrics]
@@ -126,16 +131,24 @@ def evaluate(
         )
     )
 
-    return Result(
-        scores=concatenate_datasets(scores, axis=1),
-        dataset=dataset,
-        binary_columns=binary_metrics,
-    )
-
+    if len(logs) == 0:
+        return Result(
+            scores=concatenate_datasets(scores, axis=1),
+            dataset=dataset,
+            binary_columns=binary_metrics,
+        )
+    else:    
+        return Result(
+            scores=concatenate_datasets(scores, axis=1),
+            logs=concatenate_datasets(logs, axis=1),
+            dataset=dataset,
+            binary_columns=binary_metrics,
+        )
 
 @dataclass
 class Result(dict):
     scores: Dataset
+    logs: Dataset | None = None
     dataset: Dataset | None = None
     ragas_score: float | None = None
     binary_columns: list[str] = field(default_factory=list)
@@ -157,8 +170,12 @@ class Result(dict):
         if self.dataset is None:
             raise ValueError("dataset is not provided for the results class")
         assert self.scores.shape[0] == self.dataset.shape[0]
-        result_ds = concatenate_datasets([self.dataset, self.scores], axis=1)
-
+        if self.logs:
+            assert self.scores.shape[0] == self.logs.shape[0]
+            result_ds = concatenate_datasets([self.dataset, self.scores, self.logs], axis=1)
+        else:
+            result_ds = concatenate_datasets([self.dataset, self.scores], axis=1)
+            
         return result_ds.to_pandas(batch_size=batch_size, batched=batched)
 
     def __repr__(self) -> str:
@@ -169,3 +186,4 @@ class Result(dict):
             score_strs.append(f"'ragas_score': {ragas_score:0.4f}")
         score_strs.extend([f"'{k}': {v:0.4f}" for k, v in scores.items()])
         return "{" + ", ".join(score_strs) + "}"
+    

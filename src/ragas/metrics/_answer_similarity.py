@@ -39,6 +39,7 @@ class AnswerSimilarity(MetricWithLLM):
     batch_size: int = 15
     embeddings: str | None = None
     threshold: float | None = 0.5
+    log_name: str = "embeddings"
 
     def __post_init__(self: t.Self):
         if self.embeddings is None:
@@ -61,7 +62,7 @@ class AnswerSimilarity(MetricWithLLM):
         if self.threshold:
             scores = scores >= self.threshold  # type: ignore
 
-        return scores.tolist()
+        return scores.tolist(), None
 
 
 answer_similarity = AnswerSimilarity()

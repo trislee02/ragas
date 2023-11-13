@@ -42,7 +42,8 @@ class AnswerCorrectness(MetricWithLLM):
     weights: list[float] = field(default_factory=lambda: [0.5, 0.5])
     answer_similarity: AnswerSimilarity | None = None
     faithfulness: Faithfulness | None = None
-
+    log_name: str = "answer_correctness_log"
+    
     def __post_init__(self: t.Self):
         if self.answer_similarity is None:
             self.answer_similarity = AnswerSimilarity(

@@ -59,6 +59,7 @@ class AspectCritique(MetricWithLLM):
         default_factory=llm_factory,
         repr=False,
     )
+    log_name: str = "AspectCritique"
 
     def __post_init__(self: t.Self):
         if self.name == "":

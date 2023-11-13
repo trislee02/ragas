@@ -57,6 +57,7 @@ class AnswerRelevancy(MetricWithLLM):
     batch_size: int = 15
     strictness: int = 3
     embeddings: Embeddings | None = None
+    log_name: str = "questions"
 
     def __post_init__(self: t.Self):
         if self.embeddings is None:
@@ -93,14 +94,16 @@ class AnswerRelevancy(MetricWithLLM):
             results = [[i.text for i in r] for r in results.generations]
 
             scores = []
+            logs = []
             for question, gen_questions in zip(questions, results):
                 gen_questions_str = "\n".join(gen_questions)
                 logging.info("\n\n\n")
                 logging.info(f"ANSWER RELEVANCE:\nquestion:\n{question}\n\ngen_questions:\n{gen_questions_str}")
                 cosine_sim = self.calculate_similarity(question, gen_questions)
                 scores.append(cosine_sim.mean())
+                logs.append(gen_questions_str)
 
-        return scores
+        return scores, logs
 
     def calculate_similarity(
         self: t.Self, question: str, generated_questions: list[str]

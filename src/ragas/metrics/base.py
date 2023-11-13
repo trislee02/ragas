@@ -46,10 +46,16 @@ EvaluationMode = Enum("EvaluationMode", "qac qa qc gc ga qga")
 @dataclass
 class Metric(ABC):
     batch_size: int
+    verbose: bool = False
 
     @property
     @abstractmethod
     def name(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def log_name(self) -> str:
         ...
 
     @property
@@ -70,13 +76,20 @@ class Metric(ABC):
         callbacks: t.Optional[Callbacks] = None,
     ) -> Dataset:
         scores = []
+        logs = []
         cm = CallbackManager.configure(inheritable_callbacks=callbacks)
         with trace_as_chain_group(f"ragas_{self.name}", callback_manager=cm) as group:
             for batch in tqdm(self.get_batches(len(dataset))):
-                score = self._score_batch(dataset.select(batch), callbacks=group)
+                score, log = self._score_batch(dataset.select(batch), callbacks=group)
                 scores.extend(score)
-
-        return dataset.add_column(f"{self.name}", scores)  # type: ignore
+                if log:
+                    logs.extend(log)
+        if len(logs) == len(scores):
+            dataset_log = dataset.add_column(f"{self.log_name}", logs)
+        else:
+            print("None dataset log")
+            dataset_log = None
+        return dataset.add_column(f"{self.name}", scores), dataset_log  # type: ignore
 
     @abstractmethod
     def _score_batch(
@@ -84,8 +97,9 @@ class Metric(ABC):
         dataset: Dataset,
         callbacks: t.Optional[Callbacks] = None,
         callback_group_name: str = "batch",
-    ) -> list:
+    ) -> tuple[list, list]:
         ...
+
 
     def score_single(
         self: t.Self,
