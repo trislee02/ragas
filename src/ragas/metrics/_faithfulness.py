@@ -21,14 +21,35 @@ Given a question and answer, create one or more statements from each sentence (e
 question: Who was  Albert Einstein and what is he best known for?
 answer: He was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time. He was best known for developing the theory of relativity, he also made important contributions to the development of the theory of quantum mechanics.
 statements:\nAlbert Einstein was born in Germany.\nAlbert Einstein was best known for his theory of relativity.
-question: Cadmium Chloride is slightly soluble in this chemical, it is also called what?
-answer: alcohol
-statements:\nCadmium Chloride is slightly soluble in alcohol.
-question: Were Shahul and Jithin of the same nationality?
-answer: They were from different countries.
+question: 
+<question>
+Cadmium Chloride is slightly soluble in this chemical, it is also called what?
+</question>
+answer: 
+<answer>
+alcohol
+</answer>
+statements:
+Cadmium Chloride is slightly soluble in alcohol.
+
+question: 
+<question>
+Were Shahul and Jithin of the same nationality?
+</question>
+answer: 
+<answer>
+They were from different countries.
+</answer>
 statements:\nShahul and Jithin were from different countries.
-question:{question}
-answer: {answer}
+
+question:
+<question>
+{question}
+</question>
+answer: 
+<answer>
+{answer}
+</answer>
 statements:\n"""  # noqa: E501
 )
 
