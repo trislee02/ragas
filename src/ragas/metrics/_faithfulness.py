@@ -18,29 +18,43 @@ if t.TYPE_CHECKING:
 LONG_FORM_ANSWER_PROMPT = HumanMessagePromptTemplate.from_template(
     """\
 Given a question and answer, create one or more statements from each sentence (except for email sentences, social interaction sentences) in the given answer.
-question: Who was  Albert Einstein and what is he best known for?
-answer: He was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time. He was best known for developing the theory of relativity, he also made important contributions to the development of the theory of quantum mechanics.
-statements:\nAlbert Einstein was born in Germany.\nAlbert Einstein was best known for his theory of relativity.
+question: 
+<question>
+Who was  Albert Einstein and what is he best known for?
+</question>
+answer: 
+<answer>
+Hello, I would like to introduce Albert Einstein. He was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time. He was best known for developing the theory of relativity, he also made important contributions to the development of the theory of quantum mechanics.
+</answer>
+statements:
+Albert Einstein was born in Germany.
+Albert Einstein was best known for his theory of relativity.
+
 question: 
 <question>
 Cadmium Chloride is slightly soluble in this chemical, it is also called what?
 </question>
 answer: 
 <answer>
-alcohol
+Sure, it's alcohol
 </answer>
 statements:
 Cadmium Chloride is slightly soluble in alcohol.
 
 question: 
 <question>
-Were Shahul and Jithin of the same nationality?
+Hello,
+I have a question for you that. Were Shahul and Jithin of the same nationality?
+Best regards, Anna
 </question>
 answer: 
 <answer>
-They were from different countries.
+Dear Anna,
+Thank you for your question. Let me recall a bit about that. Hmmm. They were from different countries.
+Best regards, Henry
 </answer>
-statements:\nShahul and Jithin were from different countries.
+statements:
+Shahul and Jithin were from different countries.
 
 question:
 <question>
@@ -92,7 +106,7 @@ class Faithfulness(MetricWithLLM):
         ds: Dataset,
         callbacks: t.Optional[CallbackManager] = None,
         callback_group_name: str = "batch",
-    ) -> list[float]:
+    ) -> tuple[list, list]:
         """
         returns the NLI score for each (q, c, a) pair
         """
@@ -132,6 +146,7 @@ class Faithfulness(MetricWithLLM):
             logs = []
             final_answer = "Final verdict for each statement in order:"
             final_answer = final_answer.lower()
+            
             for i, output in enumerate(outputs):
                 output = output[0].text.lower().strip()
                 list_statements_str = '\n'.join(list_statements[i])

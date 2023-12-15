@@ -102,7 +102,7 @@ class ContextRecall(MetricWithLLM):
                 ignored = sum(
                     bool(sentence.find(ignored_token) != -1) for sentence in sentences
                 )
-                scores.append(numerator / (denom - ignored)) 
+                scores.append(numerator / (denom - ignored + 0.000001)) 
                 logs.append(response[0])
                 
         return scores, logs

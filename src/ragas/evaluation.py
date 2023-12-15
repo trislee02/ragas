@@ -26,6 +26,7 @@ def evaluate(
         "answer": "answer",
         "request": "request",
         "ground_truths": "ground_truths",
+        "conversation_history": "conversation_history",
     },
     verbose: bool = False,
 ) -> Result:
